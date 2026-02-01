@@ -11,6 +11,9 @@ const UserProfileFormFields = lazy(
     () => import("keycloakify/login/UserProfileFormFields")
 );
 const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const LoginResetPassword = lazy(() => import("./pages/LoginResetPassword"));
+const LoginUpdatePassword = lazy(() => import("./pages/LoginUpdatePassword"));
 
 const doMakeUserConfirmPassword = true;
 
@@ -26,9 +29,49 @@ export default function KcPage(props: { kcContext: KcContext }) {
                     case "login.ftl":
                         return (
                             <Login
-                                {...{ kcContext, i18n, classes }}
+                                {...{ kcContext, i18n }}
+                                classes={{
+                                    ...classes,
+                                    kcButtonPrimaryClass: "!w-full !py-3 !text-lg !font-medium !transition-all !rounded-full !cursor-pointer !border-0 !bg-[var(--color-orange)] hover:!bg-[var(--color-orange-dark)] !text-[var(--color-text-primary)]"
+                                }}
                                 Template={Template}
-                                doUseDefaultCss={true}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "register.ftl":
+                        return (
+                            <Register
+                                {...{ kcContext, i18n }}
+                                classes={{
+                                    ...classes,
+                                    kcButtonPrimaryClass: "!w-full !py-3 !text-lg !font-medium !transition-all !rounded-full !cursor-pointer !border-0 !bg-[var(--color-orange)] hover:!bg-[var(--color-orange-dark)] !text-[var(--color-text-primary)]"
+                                }}
+                                Template={Template}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "login-update-password.ftl":
+                        return (
+                            <LoginUpdatePassword
+                                {...{ kcContext, i18n }}
+                                classes={{
+                                    ...classes,
+                                    kcButtonPrimaryClass: "!w-full !py-3 !text-lg !font-medium !transition-all !rounded-full !cursor-pointer !border-0 !bg-[var(--color-orange)] hover:!bg-[var(--color-orange-dark)] !text-[var(--color-text-primary)]"
+                                }}
+                                Template={Template}
+                                doUseDefaultCss={false}
+                            />
+                        );
+                    case "login-reset-password.ftl":
+                        return (
+                            <LoginResetPassword
+                                {...{ kcContext, i18n }}
+                                classes={{
+                                    ...classes,
+                                    kcButtonPrimaryClass: "!w-full !py-3 !text-lg !font-medium !transition-all !rounded-full !cursor-pointer !border-0 !bg-[var(--color-orange)] hover:!bg-[var(--color-orange-dark)] !text-[var(--color-text-primary)]"
+                                }}
+                                Template={Template}
+                                doUseDefaultCss={false}
                             />
                         );
                     default:
@@ -36,9 +79,13 @@ export default function KcPage(props: { kcContext: KcContext }) {
                             <DefaultPage
                                 kcContext={kcContext}
                                 i18n={i18n}
-                                classes={classes}
+                                classes={{
+                                    ...classes,
+                                    kcButtonPrimaryClass: "!w-full !py-3 !text-lg !font-medium !transition-all !rounded-full !cursor-pointer !border-0 !bg-[var(--color-orange)] hover:!bg-[var(--color-orange-dark)] !text-[var(--color-text-primary)]",
+                                    kcButtonClass: "!w-full !py-3 !text-lg !font-medium !transition-all !rounded-full !cursor-pointer !border-0 !bg-[var(--color-orange)] hover:!bg-[var(--color-orange-dark)] !text-[var(--color-text-primary)]"
+                                }}
                                 Template={Template}
-                                doUseDefaultCss={true}
+                                doUseDefaultCss={false}
                                 UserProfileFormFields={UserProfileFormFields}
                                 doMakeUserConfirmPassword={doMakeUserConfirmPassword}
                             />
@@ -50,6 +97,7 @@ export default function KcPage(props: { kcContext: KcContext }) {
 }
 
 const classes = {
+    kcButtonPrimaryClass: "!w-full !py-3 !text-lg !font-medium !transition-all !rounded-full !cursor-pointer !border-0 !bg-[var(--color-orange)] hover:!bg-[var(--color-orange-dark)] !text-[var(--color-text-primary)]",
     /* 
     This is commended out because the same rules are applied in the index.css file
     and applying the tailwind utility classes in the CSS file is recommended over applying them here.
