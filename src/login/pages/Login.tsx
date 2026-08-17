@@ -18,6 +18,40 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
     const [isLoginButtonDisabled, setIsLoginButtonDisabled] = useState(false);
 
+    const socialProviderDisplay: Record<string, { label: string; icon: JSX.Element }> = {
+        google: {
+            label: "Google",
+            icon: (
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+            )
+        },
+        apple: {
+            label: "Apple",
+            icon: (
+                <svg className="w-5 h-5" viewBox="0 0 24 24" style={{ color: "var(--color-text-primary)" }}>
+                    <path
+                        fill="currentColor"
+                        d="M16.365 1.43c0 1.14-.462 2.15-1.187 2.905-.802.83-2.115 1.475-3.16 1.39-.14-1.09.406-2.24 1.17-2.99C13.99.9 15.37.26 16.365 0v1.43zM20.62 17.5c-.53 1.19-.78 1.72-1.46 2.77-.94 1.46-2.27 3.28-3.92 3.3-1.47.02-1.85-.96-3.84-.95-1.99.01-2.41.97-3.88.95-1.65-.02-2.91-1.66-3.85-3.12C1.02 17.62-.28 12.6 1.42 9.2c.85-1.69 2.36-2.76 3.99-2.78 1.51-.03 2.94 1.02 3.86 1.02.92 0 2.65-1.26 4.47-1.08.76.03 2.9.31 4.27 2.32-.11.07-2.55 1.49-2.52 4.44.03 3.53 3.1 4.7 3.13 4.72-.03.09-.49 1.68-.62 1.9z"
+                    />
+                </svg>
+            )
+        }
+    };
+
+    const defaultSocialDisplay = (alias: string): { label: string; icon: JSX.Element } => ({
+        label: `${alias.charAt(0).toUpperCase()}${alias.slice(1)}`,
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: "var(--color-text-primary)" }}>
+                <circle cx="12" cy="12" r="9" strokeWidth={2} />
+            </svg>
+        )
+    });
+
     return (
         <Template
             kcContext={kcContext}
@@ -42,23 +76,21 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
 
                                     <div>
                                         {social?.providers !== undefined && social.providers.length !== 0 ? (
-                                            social.providers.map((p) => (
-                                                <a
-                                                    key={p.alias}
-                                                    id={`social-${p.alias}`}
-                                                    className="w-full flex items-center justify-center gap-3 py-3 px-4 border rounded-lg transition-colors no-underline hover:no-underline"
-                                                    style={{borderColor: 'var(--color-border)', backgroundColor: 'transparent'}}
-                                                    href={p.loginUrl}
-                                                >
-                                                    <svg className="w-5 h-5" viewBox="0 0 24 24">
-                                                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                                                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                                                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                                                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                                                    </svg>
-                                                    <span className="text-lg font-medium" style={{color: 'var(--color-text-primary)'}}>Inloggen met Google</span>
-                                                </a>
-                                            ))
+                                            social.providers.map((p) => {
+                                                const display = socialProviderDisplay[p.alias] ?? defaultSocialDisplay(p.alias);
+                                                return (
+                                                    <a
+                                                        key={p.alias}
+                                                        id={`social-${p.alias}`}
+                                                        className="w-full flex items-center justify-center gap-3 py-3 px-4 border rounded-lg transition-colors no-underline hover:no-underline"
+                                                        style={{borderColor: 'var(--color-border)', backgroundColor: 'transparent'}}
+                                                        href={p.loginUrl}
+                                                    >
+                                                        {display.icon}
+                                                        <span className="text-lg font-medium" style={{color: 'var(--color-text-primary)'}}>{display.label}</span>
+                                                    </a>
+                                                );
+                                            })
                                         ) : (
                                             <a
                                                 className="w-full flex items-center justify-center gap-3 py-3 px-4 border rounded-lg no-underline hover:no-underline pointer-events-none opacity-50 cursor-not-allowed"
@@ -73,7 +105,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
                                                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                                                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                                                 </svg>
-                                                <span className="text-lg font-medium" style={{color: 'var(--color-text-primary)'}}>Inloggen met Google</span>
+                                                <span className="text-lg font-medium" style={{color: 'var(--color-text-primary)'}}>Google</span>
                                             </a>
                                         )}
                                     </div>
